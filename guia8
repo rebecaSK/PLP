@@ -1,0 +1,109 @@
+%%EJERCICIO DE PARCIAL
+
+caminosDesde(P,[P]).
+caminosDesde((X,Y),C):- caminosDesde((X,Y),Z), append(Algo,[Ult],Z), camino(Ult,D), append(Z,[D],C). 
+
+camino((X,Y),(Z,W)):- Z is X-1, W is Y-1.
+camino((X,Y),(Z,W)):- Z is X+1, W is Y+1.
+camino((X,Y),(Z,Y)):- Z is X-1.
+camino((X,Y),(X,W)):- W is Y-1.
+camino((X,Y),(Z,Y)):- Z is X+1.
+camino((X,Y),(X,W)):- W is Y+1.
+
+%EJERCICIO 3
+
+natural(0).
+natural(suc(X)) :- natural(X).
+%menorOIgual(X, suc(Y)) :- menorOIgual(X, Y).
+%menorOIgual(X,X) :- natural(X).
+
+%I. Al realizar la consulta "menorOIgual(0,X)" el programa se cuelga debido a que
+%al ingresar en la primer linea de "MenorOigual" la recursion se repite infinitamente sin llegar nunca a uncaso base, por lo que nunca termina.
+
+%II. Un programa de PROLOG puede colgarse cuando este utiliza recursion y no contiene un caso base que lo haga detenerse o si este esta despues del paso recursivo.
+
+%III. La correccion de menorOIgual es :
+
+menorOIgual(X,X) :- natural(X).
+menorOIgual(X, suc(Y)) :- menorOIgual(X, Y).
+
+%EJERCICIO 4
+
+%juntar(?L1,?L2,?L3).
+juntar([],L2,L2).
+juntar([LS1|L1],L2,[LS1|L3]) :- juntar(L1,L2,L3).  
+
+%EJERCICIO 5
+
+%last(?L, ?U)
+last(LS,U) :- append(LC,[U],LS).
+
+%reverse(+L, ?R)
+reverse([],[]).
+reverse(L,[U|R]):- append(LC,[U],L), reverse(LC,R).
+
+%prefijo(?P, +L)
+prefijo(P,L):- append(P,X,L).
+
+%sufijo(?S,+L)
+sufijo(S,L) :- append(X,S,L).
+
+%sublista(?S, +L)
+sublista([],L).
+sublista(S, L) :- append(_, Resto, L), append(S, _, Resto), S\=[]. % Divide el sufijo Resto en S (la sublista) y un resto ignorado (_)
+
+%pertenece(?X, +L).
+pertenece(X,L):- append(Principio,[X|Fin],L). 
+
+%EJERCICIO 6
+
+%aplanar(+XS,-YS)
+aplanar([],[]).
+aplanar(X,[X]):- X\=[], X\=[L|LS].
+aplanar([X|XS],YS) :- aplanar(X,Y), aplanar(XS,YR), append(Y,YR,YS).   
+
+
+%EJERCICIO7
+%intersección(+L1, +L2, -L3)
+interseccion([],L2,[]).
+interseccion(L1,L2,L3):-append(LX,[U],L1), member(U,L2), not(member(U,LX)), interseccion(LX,L2,LR), append(LR,[U],L3),!.
+interseccion(L1,L2,L3) :- append(LX,[U],L1), interseccion(LX,L2,L3).
+
+%partir(N, L, L1, L2)
+partir(N,L,L1,L2) :- append(L1,L2,L), length(L1,N).
+
+%Todas las variables son reversibles a excepcion de L que siempre debe venir instanciada
+%En caso contrario, el resultado no sera coherente.
+
+%borrar(+ListaOriginal, +X, -ListaSinXs)
+borrar(L,X,L):- not(member(X,L)).
+borrar(L,X,RES):- append(Init,[X|Resto],L),not(member(X,Init)), borrar(Resto,X,YS), append(Init,YS,RES). 
+
+
+%sacarDuplicados(+L1, -L2)
+sacarDuplicados([],[]).
+sacarDuplicados([L|L1],[L|L2]) :- not(append([L],Resto,L1)), sacarDuplicados(L1,L2). 
+sacarDuplicados([L|L1],L2):- append([L],Resto,L1), sacarDuplicados(Resto,L2). 
+
+%permutación(+L1, ?L2)
+%%para L2 sin instanciar (pero instanciada tambien funciona).
+%%el unico problema con esta implementación es que devuelve resultados repetidos si hay elementos repetidos.
+permutacion([],[]).
+permutacion([L|L1],L2):- permutacion(L1,YS), append(Inicio,Fin,YS), append(Inicio,[L|Fin],L2). 
+
+%%para L2 instanciada, solo chequeamos que las listas no sean iguales, pero que tengan los mismos elementos:
+permutacion2(L1,L2):- L1\=L2, member(X,L1), member(X,L2).
+
+%%ejercicio de parcial
+objeto(1, 50, 10).
+objeto(2, 75, 15).
+objeto(3, 60, 5).
+objeto(4, 10, 1).
+
+
+mochila(C,[]).
+mochila(C,[X|M]):- objeto(X,P,_),P=<C,CN is C-P, mochila(CN,M), not(member(X,M)), esCreciente([X|M]).  
+
+esCreciente([]).
+esCreciente([X]).
+esCreciente([L|LS]):- append([L1],_,LS), L<L1, esCreciente(LS).

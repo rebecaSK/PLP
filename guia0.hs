@@ -45,7 +45,7 @@ aEntero (Right n) | n  = 1
 --punto 4
 limpiar :: String -> String -> String
 limpiar [] q = q
-limpiar (p:ps) q | notElem p q = limpiar ps q
+limpiar (p:ps) q | p `notElem` q = limpiar ps q
                  | otherwise = limpiar ps (sacar p q) 
 --funcion aux
 sacar :: Char -> String -> String
@@ -73,7 +73,7 @@ todosIguales (p:ps) | p == head ps = todosIguales ps
 
 --punto 5
 
-data AB a = Nil | Bin (AB a) a (AB a)
+data AB a = Nil | Bin (AB a) a (AB a) deriving (Show)
 
 vacioAB :: AB a -> Bool
 vacioAB Nil = True
