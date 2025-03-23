@@ -85,5 +85,4 @@ negacionAB (Bin hi r hd) = Bin (negacionAB hi) (not r) (negacionAB hd)
     
 productoAB :: AB Int -> Int
 productoAB Nil = 1
-productoAB (Bin hi r hd) = productoAB hi * r * productoAB hd 
-    
+productoAB (Bin hi r hd) = productoAB hi * r * productoAB hd     
