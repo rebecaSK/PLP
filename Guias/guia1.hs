@@ -238,12 +238,12 @@ comparar r f (Bin _ r1 _) = f r r1
 -- En cambio, para el IV, necesitaba comparar la raiz con la raiz de sus hijos (las subestructuras) y no solo con la recursion de ellos. 
 -- Esto solo me lo permite hacer el esquemma de recursion primitiva
 
-data Rose a = Rose a [Rose a]
+data RoseT a = Rose a [RoseT a]
 
-foldRose :: (a -> [b] -> b) -> Rose a -> b
+foldRose :: (a -> [b] -> b) -> RoseT a -> b
 foldRose f (Rose a xs) = f a (map (foldRose f) xs) 
 
-hojas :: Rose a -> [a]
+hojas :: RoseT a -> [a]
 hojas = foldRose (\r hijos -> if null hijos 
                                 then [r] 
                                 else concat hijos  )
@@ -253,12 +253,12 @@ hojas = foldRose (\r hijos -> if null hijos
 -- cuando la recursion empieza a componer el resultado final (es decir, ya llegó al caso base y va a "hacia atras")
 -- aplica concat al resultado recursivo para que siempre esté aplanado.
 
-distancias :: Rose a -> [Int]
+distancias :: RoseT a -> [Int]
 distancias = foldRose (\r hijos -> if null hijos
                                     then [0]
                                     else map (+1) (concat hijos) )
 
-alturaRT :: Rose a -> Int
+alturaRT :: RoseT a -> Int
 alturaRT = foldRose (\r hijos -> if null hijos
                                 then 1 
                                 else 1 + maximum hijos)
